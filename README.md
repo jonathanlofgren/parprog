@@ -1,2 +1,2 @@
 # parprog
-Course in parallel programing
+Course in parallel programming
