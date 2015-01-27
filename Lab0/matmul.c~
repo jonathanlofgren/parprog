@@ -1,0 +1,30 @@
+
+
+int main(void){
+
+  typedef struct matrix{
+    
+    int **m;
+    int row,col;
+    
+  } Matrix;
+
+  Matrix a = new_matrix(10, 10);
+
+
+
+  return 0;
+}
+
+Matrix new_matrix(int row, int col){
+
+  Matrix a;
+  int* temp = (int *)malloc(row*col*sizeof(int));
+  m = (int **)malloc(row*sizeof(int*));
+
+  int i;
+  for (i = 0; i < row; i++) {
+    
+  } 
+  
+}

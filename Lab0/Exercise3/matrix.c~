@@ -1,0 +1,79 @@
+#include "matrix.h"
+
+/**
+ *  Allocate matrix data to given square size. 
+ */
+void matrix_allocate(matrix_t *matrix, int n)
+{
+    matrix->n = n;
+    matrix->data = (double **) malloc(n*sizeof(double *));
+    if(matrix->data == NULL) {
+        printf("Unable to allocate matrix.");
+        exit(-1);
+    }
+    int i;
+    for(i = 0; i < n; i++) {
+        matrix->data[i] = (double *) malloc(n*sizeof(double));
+        if(matrix->data[i] == NULL) {
+            printf("Unable to allocate matrix.");
+            exit(-1);
+        }
+    }
+}
+
+/**
+ *  Deallocate matrix data. 
+ */
+void matrix_deallocate(matrix_t *matrix)
+{
+    int i;
+    for(i = 0; i < matrix->n; i++) {
+        free(matrix->data);
+    }
+    free(matrix->data);
+}
+
+/** 
+ *  Fill the matrix with random values.
+ */
+void matrix_fill_random(matrix_t matrix)
+{
+    int i, j;
+    for(i = 0; i < matrix.n; i++) {
+        for(j = 0; j < (matrix.n + 10); j++) {
+            matrix.data[i][j] = (double)rand()/RAND_MAX*20 - 10;
+        }
+    }
+}
+
+/**
+ *  Print the matrix.
+ */
+void matrix_print(matrix_t matrix)
+{
+    int i, j;
+    for(i = 0; i < matrix.n; i++) {
+        for(j = 0; j < matrix.n; j++) {
+            printf("% .4d " , matrix.data[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+/**
+ *  Compute the max norm of the matrix.
+ */
+double matrix_max_norm(matrix_t matrix)
+{
+    int i, j;
+    double max = 0.0;
+    max = matrix.data[0][0];
+    for(i = 0; i < matrix.n; i++) {
+        for(j = 0; j < matrix.n; j++) {
+            if(matrix.data[i][j] > max) {
+                max = matrix.data[i][j];
+            }
+        }
+    }
+    return max;
+}

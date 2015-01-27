@@ -1,0 +1,22 @@
+
+
+#include "stdio.h"
+
+int fibonacci(int a, int b, int max);
+
+int main( void ) {
+
+  fibonacci(1,1,10);
+  return 0;
+}
+
+void fibonacci(int a, int b, int max){
+  
+  a = a + b;
+  printf("%i\n",a);
+  
+  if (a<max){
+    fibonacci(b,a,max);
+  }
+  
+}
