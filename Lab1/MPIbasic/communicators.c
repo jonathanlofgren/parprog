@@ -9,7 +9,7 @@
 int main(int argc, char *argv[]) {
 
   int myid,nproc,rank,i,j,subrank,data,mydata;
-  MPI_Comm proc_grid, proc_row;
+  MPI_Comm proc_grid, proc_row, proc_col;
   int coords[2],pos[2],reorder=1,ndim=2,dims[2]={0,0},periods[2]={0,0};
   MPI_Status stat;
 
@@ -24,13 +24,17 @@ int main(int argc, char *argv[]) {
 
   /* Create a communicator for each row */
   MPI_Cart_coords(proc_grid,myid,ndim,coords); 
-  MPI_Comm_split(proc_grid,coords[0],coords[1],&proc_row);
-  MPI_Comm_rank(proc_row,&subrank); 
+
+  //MPI_Comm_split(proc_grid,coords[0],coords[1],&proc_row);
+  MPI_Comm_split(proc_grid,coords[1],coords[0],&proc_col);
+  //MPI_Comm_rank(proc_row,&subrank); 
+  MPI_Comm_rank(proc_col,&subrank); 
 
   /* Broadcast within a row */
   if (subrank==0)
-    mydata=coords[0];
-  MPI_Bcast(&mydata,1,MPI_INT,0,proc_row);
+    mydata=coords[1];
+
+  MPI_Bcast(&mydata,1,MPI_INT,0,proc_col);
 
   /* Check the result of Broadcast */
   for (i=0; i<dims[0]; i++){
@@ -43,7 +47,7 @@ int main(int argc, char *argv[]) {
   }
 
   /* Exit and clean up MPI variables */
-  MPI_Comm_free(&proc_row);
+  MPI_Comm_free(&proc_col);
   MPI_Comm_free(&proc_grid);
   MPI_Finalize();
 }
