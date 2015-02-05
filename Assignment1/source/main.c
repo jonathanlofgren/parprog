@@ -4,6 +4,19 @@
 #include <time.h>
 #define MASTER 0
 
+void print_matrix(double *matrix, int n)
+{
+  for (int i=0; i<n; i++)
+    {
+       for (int j=0; j<n; j++)
+       {
+	   printf("%0.2f ", matrix[i*n+j]);
+       }
+       printf("\n");
+    }
+    printf("\n");  
+}
+
 int main(int argc, char *argv[]) {
 
   int n, grid_rank, nproc;
@@ -34,27 +47,85 @@ int main(int argc, char *argv[]) {
       n = atoi(argv[1]);
       if (grid_rank == MASTER) printf("Matrix size: %dx%d \n", n, n);
   }
-  
-  
+    
   // Master process creates matrix A and B
   if (grid_rank == MASTER)
   {
     n=atoi(argv[1]);
-    A=(double *)calloc(n*n,sizeof(double));
-    B=(double *)calloc(n*n,sizeof(double));
+    A=(double *)calloc(n*n, sizeof(double));
+    B=(double *)calloc(n*n, sizeof(double));
 
-    time_t t;
-    srand((unsigned) time(&t));
+    srand((unsigned) time(NULL));
     
     for (int i=0; i<n*n; i++)
     {
-      A[i]=((double)rand()/(double)RAND_MAX);
-      B[i]=((double)rand()/(double)RAND_MAX);
+	A[i]=(double)rand()/(double)RAND_MAX;
+	B[i]=(double)rand()/(double)RAND_MAX;
     }
+
+    print_matrix(A, n);
+  }
+  
+  int coords[2], col_rank, row_rank;
+  MPI_Comm proc_row, proc_col;
+  MPI_Status status;
+
+  // Create communicators for row and column
+  MPI_Cart_coords(proc_grid, grid_rank, ndim, coords); 
+  MPI_Comm_split(proc_grid,coords[1],coords[0],&proc_col);
+  MPI_Comm_split(proc_grid,coords[0],coords[1],&proc_row);
+  MPI_Comm_rank(proc_col, &col_rank);
+  MPI_Comm_rank(proc_row, &row_rank);
+
+  // Allocate the blocks
+  int blocksize = n / dims[0]; 
+  double *a, *b;
+  a = (double *)calloc(blocksize*blocksize, sizeof(double));
+  a_temp = (double *)calloc(blocksize*blocksize, sizeof(double));
+  b = (double *)calloc(blocksize*blocksize, sizeof(double));
+  c = (double *)calloc(blocksize*blocksize, sizeof(double));
+  // Create datatype for the blocks
+  MPI_Datatype block_type;
+  MPI_Type_vector(blocksize,blocksize,n,MPI_DOUBLE,&block_type);
+  MPI_Type_commit(&block_type);
+
+  // Send one block of A and B to each processor
+  if (grid_rank == MASTER)
+  {
+      for (int i=0; i<nproc; i++)
+      {	  
+	  int x = (i % dims[0]) * blocksize;
+	  int y = i / dims[0] * blocksize;
+	  
+	  MPI_Send(&A[y*n + x], 1, block_type, i, 42, MPI_COMM_WORLD);
+	  MPI_Send(&B[y*n + x], 1, block_type, i, 42, MPI_COMM_WORLD);
+      }
+  }
+  MPI_Recv(a, blocksize*blocksize, MPI_DOUBLE, 0, 42, MPI_COMM_WORLD, &status);
+  MPI_Recv(b, blocksize*blocksize, MPI_DOUBLE, 0, 42, MPI_COMM_WORLD, &status);
+
+
+
+  for (int k = 0; k < dims[0]; k++)
+  {
+      m = (coords[1]+k) % dims[0];
+      if (coords[0] == m)
+      {
+	  memcpy(a_temp, a, blocksize*blocksize*sizeof(double));
+	  MPI_Bcast(a_temp, blocksize*blocksize, MPI_DOUBLE, row_rank, proc_row);
+      }
+      
   }
 
-  // CODE GOES HERE
 
+
+
+  printf("rank: %d\n", grid_rank); 
+  print_matrix(a, blocksize);
+  
+  
+
+  // CODE GOES HERE
 
   if (grid_rank == MASTER)
   {
@@ -62,6 +133,9 @@ int main(int argc, char *argv[]) {
     free(B);
   }
 
+  free(a);
+  free(b);
+  MPI_Type_free(&block_type);
   MPI_Finalize();
   return 0;
 }
