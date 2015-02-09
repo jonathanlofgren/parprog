@@ -19,6 +19,19 @@ void print_matrix(double *matrix, int n)
   printf("\n");  
 }
 
+void print_matrix_int(int *matrix, int n)
+{
+  for (int i=0; i<n; i++)
+  {
+      for (int j=0; j<n; j++)
+      {
+	  printf("%d ", matrix[i*n+j]);
+      }
+      printf("\n");
+  }
+  printf("\n");  
+}
+
 int matrix_equal(double *a, double *b, int n)
 {
     int e = 0;
@@ -87,20 +100,21 @@ int main(int argc, char *argv[]) {
   if (grid_rank == MASTER)
   {
     n=atoi(argv[1]);
-    A=(double *)calloc(n*n, sizeof(double));
-    B=(double *)calloc(n*n, sizeof(double));
-    C=(double *)calloc(n*n, sizeof(double));
+    A=(double *)malloc(n*n*sizeof(double));
+    B=(double *)malloc(n*n*sizeof(double));
+    C=(double *)malloc(n*n*sizeof(double));
 
-    srand((unsigned) time(NULL));
-    //srand(42);
+    //srand((unsigned) time(NULL));
+    srand(42);
 
     for (int i=0; i<n*n; i++)
     {
-	A[i]=(double)rand()/(double)RAND_MAX;
-	B[i]=(double)rand()/(double)RAND_MAX;
+	A[i]= i;//(double)rand()/(double)RAND_MAX;
+	B[i]= i;//(double)rand()/(double)RAND_MAX;
+	C[i]= 0;
 	
-	A[i] = (double)((int)(10*A[i]))/10;
-	B[i] = (double)((int)(10*B[i]))/10;
+	//A[i] = (double)((int)(10*A[i]))/10;
+	//B[i] = (double)((int)(10*B[i]))/10;
     }
 
     //print_matrix(A, n);
@@ -117,6 +131,7 @@ int main(int argc, char *argv[]) {
   MPI_Comm_split(proc_grid,coords[0],coords[1],&proc_row);
   MPI_Comm_rank(proc_col, &col_rank);
   MPI_Comm_rank(proc_row, &row_rank);
+  //printf("Communicators created");
 
   // Allocate the blocks
   int blocksize = n / dims[0]; 
@@ -127,10 +142,40 @@ int main(int argc, char *argv[]) {
   c = (double *)calloc(bl2, sizeof(double));
 
   // Create datatype for the blocks
-  MPI_Datatype block_type;
-  MPI_Type_vector(blocksize,blocksize,n,MPI_DOUBLE,&block_type);
+  MPI_Datatype block_type, block_type1;
+  MPI_Type_vector(blocksize,blocksize,n,MPI_DOUBLE,&block_type1);
+  MPI_Type_create_resized(block_type1, 0, sizeof(double), &block_type);
   MPI_Type_commit(&block_type);
+  MPI_Barrier(proc_grid);
+  
+  // Create offsets for Scatterv
+  int disps[nproc];
+  int counts[nproc];
+  int counts2[nproc];
 
+  for (int i=0; i<dims[0]; i++) 
+  {
+      for (int j=0; j<dims[1]; j++) 
+      {
+	  disps[i*dims[1]+j] = i*n*blocksize+j*blocksize;
+	  counts[i*dims[1]+j] = 1;
+	  counts2[i*dims[1]+j] = bl2;
+      }
+  }
+  if (grid_rank == MASTER)
+  {
+      printf("Counts:\n");
+      print_matrix_int(&counts[0], dims[0]);
+      printf("Disps:\n");
+      print_matrix_int(&disps[0], dims[0]);
+  }
+// Scatter block A and B
+
+  MPI_Scatterv(A, counts, disps, block_type, a, bl2, MPI_DOUBLE, 0, proc_grid);
+  MPI_Scatterv(B, counts, disps, block_type, b, bl2, MPI_DOUBLE, 0, proc_grid);
+
+  /*
+  MPI_Request request3, request4;
   // Send one block of A and B to each processor
   if (grid_rank == MASTER)
   {
@@ -139,32 +184,52 @@ int main(int argc, char *argv[]) {
 	  int x = (i % dims[0]) * blocksize;
 	  int y = i / dims[0] * blocksize;
 	  
-	  MPI_Send(&A[y*n + x], 1, block_type, i, 42, proc_grid);
-	  MPI_Send(&B[y*n + x], 1, block_type, i, 42, proc_grid);
+	  MPI_Isend(&A[y*n + x], 1, block_type, i, i, proc_grid, &request3);
+      }
+
+  }
+  MPI_Irecv(a, bl2, MPI_DOUBLE, 0, grid_rank, proc_grid, &request3);
+  MPI_Wait(&request3, MPI_STATUS_IGNORE);
+
+  //MPI_Barrier(proc_grid);
+  if (grid_rank == MASTER)
+  {
+      for (int i=0; i<nproc; i++)
+      {	  
+	  int x = (i % dims[0]) * blocksize;
+	  int y = i / dims[0] * blocksize;
+
+	  MPI_Isend(&B[y*n + x], 1, block_type, i, i, proc_grid, &request4);
       }
   }
-  MPI_Recv(a, bl2, MPI_DOUBLE, 0, 42, proc_grid, &status);
-  MPI_Recv(b, bl2, MPI_DOUBLE, 0, 42, proc_grid, &status);
 
-  
+  MPI_Irecv(b, bl2, MPI_DOUBLE, 0, grid_rank, proc_grid, &request4);
+  MPI_Wait(&request4, MPI_STATUS_IGNORE);
+
+  */
+
   //printf("grid_rank: %d, coords: %d %d\n",grid_rank,coords[0],coords[1]);
   //print_matrix(a,blocksize);
 
 
   int m, source, dest;
   MPI_Request request, request2;
+  MPI_Status status2;
 
   // Run fox's algorithm to calculate c in each processor
   for (int k = 0; k < dims[0]; k++)
   {
+
+      //printf("%d \n", k);
       m = (coords[0]+k) % dims[0];
 
       if (row_rank == m)
       {
 	  memcpy(a_temp, a, bl2*sizeof(double));	
       }
-      
+       
       MPI_Bcast(a_temp, bl2, MPI_DOUBLE, m, proc_row);
+      MPI_Barrier(proc_grid);
       
       MPI_Cart_shift(proc_grid, 0, -1, &source, &dest);
       MPI_Isend(b, bl2, MPI_DOUBLE, dest, 43, proc_grid, &request);
@@ -172,15 +237,20 @@ int main(int argc, char *argv[]) {
       add_multiply(c,a_temp,b,blocksize);
       
       // something wrong here with the communication?!
-
       MPI_Irecv(b, bl2, MPI_DOUBLE, source, 43, proc_grid, &request2);
+
+      
+      //MPI_Send(b, bl2, MPI_DOUBLE, dest, 43, proc_grid);
+      //MPI_Recv(b, bl2, MPI_DOUBLE, source, 43, proc_grid, &status2);
       MPI_Wait(&request2, MPI_STATUS_IGNORE);
       MPI_Barrier(proc_grid);      
   }
 
   // Send all blocks c to MASTER
-  MPI_Isend(c, bl2, MPI_DOUBLE, 0, 44, proc_grid, &request);
+  MPI_Isend(c, bl2, MPI_DOUBLE, 0, grid_rank, proc_grid, &request);
+  MPI_Barrier(proc_grid);
   
+/*
   if (grid_rank == MASTER)
   {
       for (int i=0; i<nproc; i++)
@@ -188,11 +258,13 @@ int main(int argc, char *argv[]) {
 	  int x = (i % dims[0]) * blocksize;
 	  int y = i / dims[0] * blocksize;
 	  
-	  MPI_Irecv(&C[y*n + x], 1, block_type, i, 44, proc_grid, &request2);
+	  MPI_Irecv(&C[y*n + x], 1, block_type, i, i, proc_grid, &request2);
 	  MPI_Wait(&request2, MPI_STATUS_IGNORE);
       }
   }
+*/
   
+  MPI_Gatherv(c, bl2, MPI_DOUBLE, C, counts, disps, block_type, 0, proc_grid);
   
   // Print results
   if (grid_rank == MASTER)
@@ -210,7 +282,7 @@ int main(int argc, char *argv[]) {
       int errors = matrix_equal(C, D, n);
       printf("Errors: %d \n", errors);
   }
-  
+  MPI_Barrier(proc_grid);
   // Clean up
   if (grid_rank == MASTER)
   {
@@ -218,7 +290,7 @@ int main(int argc, char *argv[]) {
     free(B);
     free(C);
   }
-
+  
   free(a);
   free(b);
   free(c);
@@ -227,44 +299,3 @@ int main(int argc, char *argv[]) {
   MPI_Finalize();
   return 0;
 }
-
-  /**
-  int myid,nproc,rank,i,j,subrank,data,mydata;
-  MPI_Comm proc_grid, proc_row;
-  int coords[2],pos[2],reorder=1,ndim=2,dims[2]={0,0},periods[2]={0,0};
-  MPI_Status stat;
-
-  // Initialize MPI  
-  MPI_Init(&argc, &argv);
-  MPI_Comm_size(MPI_COMM_WORLD,&nproc);
-
-  // Create a virtual 2D-grid topology 
-  MPI_Dims_create(nproc,ndim,dims);
-  MPI_Cart_create(MPI_COMM_WORLD,ndim,dims,periods,reorder,&proc_grid);
-  MPI_Comm_rank(proc_grid,&myid);    // Note: use proc_grid
-
-  // Create a communicator for each row 
-  MPI_Cart_coords(proc_grid,myid,ndim,coords); 
-  MPI_Comm_split(proc_grid,coords[0],coords[1],&proc_row);
-  MPI_Comm_rank(proc_row,&subrank); 
-
-  // Broadcast within a row 
-  if (subrank==0)
-    mydata=coords[0];
-  MPI_Bcast(&mydata,1,MPI_INT,0,proc_row);
-
-  // Check the result of Broadcast
-  for (i=0; i<dims[0]; i++){
-    for (j=0; j<dims[1]; j++){
-      pos[0]=i; pos[1]=j;
-      MPI_Cart_rank(proc_grid,pos,&rank);
-	if (rank==myid)
-	  printf("Rank: %d, Coords: %d %d, Data: %d\n", myid,i,j,mydata);
-    }
-  }
-
-  // Exit and clean up MPI variables
-  MPI_Comm_free(&proc_row);
-  MPI_Comm_free(&proc_grid);
-
-  /**/
