@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 
     #ifdef PRINT_MATRIX
     print_matrix(A,n);
-    print_matrix(A,n);
+    print_matrix(B,n);
     #endif
   }
 
