@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define PRINT
+//#define PRINT
 
-void swap(int *a, int *b);
+void swap(int *a, int *b, int *temp);
 void print(int *a, int n);
 int partition(int *a, int p, int r);
 void quicksort(int *a, int p, int r);
@@ -20,11 +20,11 @@ void print(int *a, int n)
     printf("\n");
 }
 
-void swap(int *a, int *b)
+void swap(int *a, int *b, int *temp)
 {
-    int temp = *b;
+    *temp = *b;
     *b = *a;
-    *a = temp;
+    *a = *temp;
 }
 
 void quicksort(int *a, int p, int r)
@@ -34,20 +34,21 @@ void quicksort(int *a, int p, int r)
 	int pivot = a[r];
 	int i = p - 1;
 	int j = p;
+	int temp;
 
 	while (j < r)
 	{
 	    if (a[j] <= pivot)
 	    {
 		i++;
-		swap(&a[i], &a[j]);
+		swap(&a[i], &a[j], &temp);
 	    }
 	
 	    j++;
 	}
 
 	i++;
-	swap(&a[r], &a[i]);
+	swap(&a[r], &a[i], &temp);
 
 	quicksort(a, p, i-1);
 	quicksort(a, i+1, r);
