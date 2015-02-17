@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-//#define PRINT
+#define PRINT
 
 void swap(int *a, int *b);
 void print(int *a, int n);
@@ -27,35 +27,30 @@ void swap(int *a, int *b)
     *a = temp;
 }
 
-int partition(int *a, int p, int r)
-{
-    // pivot value
-    int pivot = a[r];
-    //printf("Pivot: %d \n", pivot);
-
-    int i = p - 1;
-
-    for (int j = p; j < r; j++)
-    {
-	if (a[j] <= pivot)
-	{
-	    //printf("test %d\n", j);
-	    i++;
-	    swap(&a[i], &a[j]);
-	}
-    }
-
-    swap(&a[r], &a[i+1]);
-    return i+1;
-}
-
 void quicksort(int *a, int p, int r)
 {
     if (p < r)
     {
-	int q = partition(a, p, r);
-	quicksort(a, p, q-1);
-	quicksort(a, q+1, r);
+	int pivot = a[r];
+	int i = p - 1;
+	int j = p;
+
+	while (j < r)
+	{
+	    if (a[j] <= pivot)
+	    {
+		i++;
+		swap(&a[i], &a[j]);
+	    }
+	
+	    j++;
+	}
+
+	i++;
+	swap(&a[r], &a[i]);
+
+	quicksort(a, p, i-1);
+	quicksort(a, i+1, r);
     }
 }
 
@@ -67,6 +62,7 @@ int main(int argc, char *argv[])
     int *a = (int *)malloc(n*sizeof(int));
     
     srand(time(NULL));
+
     for (int i = 0; i < n; i++)
     {
 	a[i] = 1+rand()%100; 
@@ -79,7 +75,7 @@ int main(int argc, char *argv[])
 
     clock_t t1, t2;
 
-    t1 = clock();
+    t1 = clock();   
     quicksort(a, 0, n-1);
     t2 = clock();
 

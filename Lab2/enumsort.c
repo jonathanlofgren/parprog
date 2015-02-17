@@ -29,7 +29,8 @@ void *findrank(void *arg)
 
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 	
   pthread_t threads[NUM_THREADS];
   pthread_attr_t attr;
