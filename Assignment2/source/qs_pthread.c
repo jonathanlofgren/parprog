@@ -3,7 +3,6 @@
 #include <time.h>
 #include <pthread.h>
 #include <sys/time.h>
-#include <time.h>
 #include <unistd.h>
 //#define PRINT
 
@@ -118,7 +117,7 @@ void *quicksort(void *sarg)
 	pthread_t threads[2];
 	
 	pthread_mutex_lock(&running_mutex);
-	if (running_threads < MAX_THREADS && !MAX_REACHED && (r-l) > 10)
+	if (running_threads < MAX_THREADS && (r-l) > 5)
 	{
 	 
 	    running_threads++;
