@@ -6,10 +6,10 @@
 #include <sys/time.h>
 //#define PRINT
 
-void swap(int *a, int *b, int *temp);
-void print(int *a, int n);
-int partition(int *a, int p, int r);
-void quicksort(int *a, int p, int r);
+void swap(double *a, double *b, double *temp);
+void print(double *a, int n);
+int partition(double *a, int p, int r);
+void quicksort(double *a, int p, int r);
 
 pthread_barrier_t   barrier; 
 
@@ -18,7 +18,7 @@ typedef struct
   int tid;
   int p;
   int n;
-  int *a;
+  double *a;
 } pear_arg;
 
 int timer(void)
@@ -28,28 +28,29 @@ int timer(void)
   return (tv.tv_sec*1000000+tv.tv_usec);
 }
 
-void print(int *a, int n)
+void print(double *a, int n)
 {
-    for (int i = 0; i < n; i++)
+    int i;
+    for (i = 0; i < n; i++)
     {
-	printf("%d ", a[i]);
+	printf("%0.2f ", a[i]);
     }
 
     printf("\n");
 }
 
-void swap(int *a, int *b, int *temp)
+void swap(double *a, double *b, double *temp)
 {
     *temp = *b;
     *b = *a;
     *a = *temp;
 }
 
-void merge(int * a, int * temp, int n, int l1, int l2)
+void merge(double * a, double * temp, int n, int l1, int l2)
 {
-  int i1 = 0, i2 = 0;
-
-  for (int i = 0; i < n; i++)
+    int i1 = 0, i2 = 0, i;
+  
+  for (i = 0; i < n; i++)
     {
 
       if (i1 >= n/2)
@@ -80,30 +81,35 @@ void * pearsort(void * arg)
 {
   pear_arg * parg = (pear_arg *)arg;
   int tid = parg->tid;
-  int * a = parg->a;
+  double * a = parg->a;
   int n = parg->n;
   int p = parg->p;
   int oddid = tid % 2;
   int block = n/p;
-  int * temp = (int *)malloc(2*block*sizeof(int));
+  double * temp = (double *)malloc(2*block*sizeof(double));
   int l = n/p*tid;
   int r = l + block - 1;
 
   int didsomething;
 
+  // sort this threads block
   quicksort(a,l,r);
-  pthread_barrier_wait(&barrier);
 
-  for (int i = 0; i < p; i++)
+  pthread_barrier_wait(&barrier);
+  
+  int i;
+  for (i = 0; i < p; i++)
     {
       int evenodd = i % 2;
       didsomething = 0;
 
+      // merge odd-even blocks
       if (!evenodd && !oddid && tid != p-1)
 	{
 	  merge(a, temp, 2*block, l, l+block); //do something
 	  didsomething = 1;
 	}
+      // merge even-odd blocks
       else if (evenodd && oddid && tid != p-1)
 	{
 	  merge(a, temp, 2*block, l, l+block);	 
@@ -112,8 +118,9 @@ void * pearsort(void * arg)
 
       pthread_barrier_wait(&barrier);
 
+      // copy the merged blocks back to a
       if (didsomething)
-	memcpy(&a[l],temp,2*block*sizeof(int));	
+	memcpy(&a[l],temp,2*block*sizeof(double));	
 	
       pthread_barrier_wait(&barrier);
 
@@ -129,14 +136,14 @@ void * pearsort(void * arg)
   pthread_exit(NULL);
 }
 
-void quicksort(int *a, int p, int r)
+void quicksort(double *a, int p, int r)
 {
     if (p < r)
     {
-	int pivot = a[r];
+	double pivot = a[r];
 	int i = p - 1;
 	int j = p;
-	int temp;
+	double temp;
 
 	while (j < r)
 	{
@@ -159,22 +166,23 @@ void quicksort(int *a, int p, int r)
 
 int main(int argc, char *argv[]) 
 {
-    printf("Ordning och reda!\n");
+ 
     int n = atoi(argv[1]);
     int p = atoi(argv[2]);
-
-    pthread_barrier_init (&barrier, NULL, p);
+    printf("Ordning och reda! p: %d \n", p);
+    pthread_barrier_init(&barrier, NULL, p);
 
     pthread_t threads[p];
     pear_arg pargarr[p];
 
-    int *a = (int *)malloc(n*sizeof(int));
+    double *a = (double *)malloc(n*sizeof(double));
     
     srand(time(NULL));
 
-    for (int i = 0; i < n; i++)
+    int i;
+    for (i = 0; i < n; i++)
     {
-	a[i] = 1+rand()%100; 
+	a[i] = drand48(); 
     }
 
 #ifdef PRINT
@@ -186,7 +194,7 @@ int main(int argc, char *argv[])
 
     t1 = timer();   
     
-    for (int i = 0; i < p; i++)
+    for (i = 0; i < p; i++)
       {
 	pargarr[i].tid = i;
 	pargarr[i].p = p;
@@ -196,7 +204,7 @@ int main(int argc, char *argv[])
 	pthread_create(&threads[i], NULL, pearsort, (void *)&pargarr[i]);
       }
 
-    for(int i=0; i < p; i++) 
+    for(i=0; i < p; i++) 
       {
 	pthread_join(threads[i], NULL);
       }
@@ -210,18 +218,17 @@ int main(int argc, char *argv[])
 
     printf("Elapsed time: %f ms \n",(t2-t1)/1000.0);
 
-    int i = 0;
     for (i = 0; i < n-1; ++i)
     {
 	if (a[i] > a[i+1])
 	{
-	    printf("Not sorted!\n");
+	    printf("Not sorted!\n\n");
 	    break;
 	}
     }
     
     if (i == n-1)
-      printf("Pengar på fredag!\n");
+      printf("Pengar på fredag!\n\n");
 
     free(a);
 }

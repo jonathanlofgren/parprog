@@ -11,9 +11,10 @@
 
 void print_matrix(double *matrix, int n)
 {
-  for (int i=0; i<n; i++)
+    int i, j;
+  for (i=0; i<n; i++)
   {
-      for (int j=0; j<n; j++)
+      for (j=0; j<n; j++)
       {
 	  printf("%0.8f ", matrix[i*n+j]);
       }
@@ -25,9 +26,10 @@ void print_matrix(double *matrix, int n)
 
 void print_part(double *matrix, int* disps, int nrows)
 {
-  for (int i=0; i<nrows; i++)
+    int i, j;
+  for (i=0; i<nrows; i++)
   {
-      for (int j=0; j<nrows; j++)
+      for (j=0; j<nrows; j++)
       {
 	  printf("%0.0f ", matrix[disps[i*nrows+j]]);
       }
@@ -39,9 +41,10 @@ void print_part(double *matrix, int* disps, int nrows)
 
 void print_matrix_int(int *matrix, int n)
 {
-  for (int i=0; i<n; i++)
+    int i, j;
+  for (i=0; i<n; i++)
   {
-      for (int j=0; j<n; j++)
+      for (j=0; j<n; j++)
       {
 	  printf("%d ", matrix[i*n+j]);
       }
@@ -54,8 +57,8 @@ void print_matrix_int(int *matrix, int n)
 int matrix_equal(double *a, double *b, int n)
 {
     int e = 0;
-
-    for (int i = 0; i < n*n; i++)  
+    int i;
+    for (i = 0; i < n*n; i++)  
     {	
 	if ((a[i] - b[i])*(a[i] - b[i]) > 0.1)
 	{
@@ -70,13 +73,14 @@ int matrix_equal(double *a, double *b, int n)
 
 void add_multiply(double *c, double *a, double *b, int n)
 {
-    for (int i = 0; i < n; i++)  
+    int i, j, k;
+    for (i = 0; i < n; i++)  
     {	
-	for (int j = 0; j < n; j++)
+	for (j = 0; j < n; j++)
 	{
 	    double sum = 0;
 
-	    for (int k = 0; k < n; k++) {
+	    for (k = 0; k < n; k++) {
 		sum += a[i*n+k] * b[k*n+j];
 	    }
 

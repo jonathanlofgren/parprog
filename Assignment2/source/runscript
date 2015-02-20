@@ -1,0 +1,33 @@
+#!/bin/bash
+
+../build/qs_pthread 100000000 0
+../build/qs_pthread 100000000 0
+../build/qs_pthread 100000000 0
+
+../build/qs_pthread 100000000 1
+../build/qs_pthread 100000000 1
+../build/qs_pthread 100000000 1
+
+../build/qs_pthread 100000000 2
+../build/qs_pthread 100000000 2
+../build/qs_pthread 100000000 2
+
+../build/qs_pthread 100000000 3
+../build/qs_pthread 100000000 3
+../build/qs_pthread 100000000 3
+
+../build/qs_pthread 100000000 4
+../build/qs_pthread 100000000 4
+../build/qs_pthread 100000000 4
+
+../build/qs_pthread 100000000 5
+../build/qs_pthread 100000000 5
+../build/qs_pthread 100000000 5
+
+../build/qs_pthread 100000000 6
+../build/qs_pthread 100000000 6
+../build/qs_pthread 100000000 6
+
+../build/qs_pthread 100000000 7
+../build/qs_pthread 100000000 7
+../build/qs_pthread 100000000 7

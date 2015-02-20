@@ -4,37 +4,38 @@
 
 //#define PRINT
 
-void swap(int *a, int *b, int *temp);
-void print(int *a, int n);
-int partition(int *a, int p, int r);
-void quicksort(int *a, int p, int r);
+void swap(double *a, double *b, double *temp);
+void print(double *a, int n);
+int partition(double *a, int p, int r);
+void quicksort(double *a, int p, int r);
 
 
-void print(int *a, int n)
+void print(double *a, int n)
 {
-    for (int i = 0; i < n; i++)
+    int i;
+    for (i = 0; i < n; i++)
     {
-	printf("%d ", a[i]);
+	printf("%0.2f ", a[i]);
     }
 
     printf("\n");
 }
 
-void swap(int *a, int *b, int *temp)
+void swap(double *a, double *b, double *temp)
 {
     *temp = *b;
     *b = *a;
     *a = *temp;
 }
 
-void quicksort(int *a, int p, int r)
+void quicksort(double *a, int p, int r)
 {
     if (p < r)
     {
-	int pivot = a[r];
+	double pivot = a[r];
 	int i = p - 1;
 	int j = p;
-	int temp;
+	double temp;
 
 	while (j < r)
 	{
@@ -60,13 +61,14 @@ int main(int argc, char *argv[])
     printf("Ordning och reda!\n");
     
     int n = atoi(argv[1]);
-    int *a = (int *)malloc(n*sizeof(int));
+    double *a = (double *)malloc(n*sizeof(double));
     
     srand(time(NULL));
 
-    for (int i = 0; i < n; i++)
+    int i;
+    for (i = 0; i < n; i++)
     {
-	a[i] = 1+rand()%100; 
+	a[i] = drand48(); 
     }
 
 #ifdef PRINT
