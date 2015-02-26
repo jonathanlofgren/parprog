@@ -9,21 +9,96 @@
 #include <time.h>
 #include <math.h>
 #include <string.h>
+#include "bucketsort.h"
 
 #define PI 3.14159265358979323846
 
 //#define PRINT
 
-typedef struct Bucket
+
+void bucket_balance(bucket *blist, int bucket_count, bucketbucket *bb, int num_threads)
 {
-    int count;
-    int size;
-    double *b;
-} bucket;
+    bucket *sorted_buckets = (bucket *)malloc(bucket_count*sizeof(bucket));
+    memcpy(sorted_buckets, blist, bucket_count*sizeof(bucket)); 
+    
+    quicksort_bucket(sorted_buckets, 0, bucket_count-1);
+    
+    int i, j, least;
+    double least_load, load;
+
+    for (i = bucket_count - 1; i >= 0; i--)
+    {
+	// Get work load for this bucket
+	if (sorted_buckets[i].count != 0)
+	{
+	    load = sorted_buckets[i].count*log(sorted_buckets[i].count);
+	}	
+
+	// find the bucketbucket with the least load
+	least = 0;
+	least_load = bb[0].load;
+	for (j = 1; j < num_threads; j++)
+	{
+	    if (bb[j].load < least_load)
+	    {
+		least = j;
+		least_load = bb[j].load;
+	    }
+	}
+
+	// insert the bucket
+	bb[least].buckets[bb[least].bucket_count] = sorted_buckets[i];
+	bb[least].load += load;
+	bb[least].bucket_count++;
+
+
+	//printf("Count: %d\n", sorted_buckets[i].count);
+	
+    }
+    
+    printf("\nLoad balancing:\n");
+    for (i = 0; i < num_threads; i++)
+    {
+	printf("Load: %0.2f\n", bb[i].load);
+    }
+    printf("\n");
+
+    free(sorted_buckets);
+}
+
+bucketbucket *create_bucketbucket(int num, int bucket_count)
+{
+    bucketbucket *bb = (bucketbucket *)malloc(num*sizeof(bucketbucket));
+    
+    int i;
+    for (i = 0; i < num; i++)
+    {
+	bb[i].load = 0;
+	bb[i].bucket_count = 0;
+	bb[i].buckets = (bucket *)malloc(bucket_count*sizeof(bucket));
+    }
+
+    return bb;
+}
+
+void free_bucketbucket(bucketbucket *bb, int num)
+{
+    int i;
+    for (i = 0; i < num; i++)
+    {
+	free(bb[i].buckets);
+    }
+
+    free(bb);
+}
 
 int main(int argc, char *argv[]) 
 {
-    printf("Threads = %d\n", omp_get_max_threads());
+    omp_set_num_threads(4);
+    int num_threads = omp_get_max_threads();
+    printf("Threads = %d\n", num_threads);
+
+  
 
     if (argc != 3)
     {
@@ -116,10 +191,56 @@ int main(int argc, char *argv[])
     }
 #endif
     
+/* Manual load balancing */
+    
+    bucketbucket *bb = create_bucketbucket(num_threads, bucket_count);
+    bucket_balance(blist, bucket_count, bb, num_threads);
+    
+    int tid;
+#pragma omp parallel private(i, tid) num_threads(num_threads)
+    {
+	int startime = omp_get_wtime();
+	tid = omp_get_thread_num();
 
+	for (i = 0; i < bb[tid].bucket_count; i++)
+	{
+	    quicksort(bb[tid].buckets[i].b, 0,bb[tid].buckets[i].count - 1);
+	}
 
-// Using tasks
+	printf("Tid: %0.5f\n", omp_get_wtime()-startime);
+    }
+
+      free_bucketbucket(bb, num_threads);
 /**/
+
+/* Serial *
+    for (i = 0; i < bucket_count; i++)
+    {
+	quicksort(blist[i].b, 0, blist[i].count - 1);    
+    }
+/**/
+
+/* Static parallel for *
+#pragma omp parallel for
+    for (i = 0; i < bucket_count; i++)
+    {
+	quicksort(blist[i].b, 0, blist[i].count - 1);
+
+    }
+/**/
+
+  
+/* One thread for each bucket *
+    int tid;
+#pragma omp parallel private(tid) num_threads(bucket_count)
+    {
+	tid = omp_get_thread_num();
+	quicksort(blist[tid].b, 0, blist[tid].count - 1);    
+    }
+/**/
+
+
+/* Using tasks *
 #pragma omp parallel
     {
 #pragma omp single
@@ -135,9 +256,9 @@ int main(int argc, char *argv[])
     }
 /**/
 
-// Dynamic scehduling
-/**
-#pragma parallel for schedule(dynamic,1)
+
+/* Dynamic scheduling *
+#pragma omp parallel for schedule(dynamic,1)
     for (i = 0; i < bucket_count; i++)
     {
 	quicksort(blist[i].b, 0, blist[i].count - 1);
@@ -194,5 +315,7 @@ int main(int argc, char *argv[])
 	free(blist[i].b);
 
     free(a);
+  
     free(blist);
+
 }

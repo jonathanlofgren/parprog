@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "bucketsort.h"
 
 void swap(double *a, double *b, double *temp);
 void print(double *a, int n);
@@ -50,3 +51,39 @@ void quicksort(double *a, int p, int r)
 	quicksort(a, i+1, r);
     }
 }
+
+void swap_bucket(bucket *a, bucket *b, bucket *temp)
+{
+    *temp = *b;
+    *b = *a;
+    *a = *temp;
+}
+
+void quicksort_bucket(bucket *blist, int p, int r)
+{
+    if (p < r)
+    {
+	bucket pivot = blist[r];
+	int i = p - 1;
+	int j = p;
+	bucket temp;
+
+	while (j < r)
+	{
+	    if (blist[j].count <= pivot.count)
+	    {
+		i++;
+		swap_bucket(&blist[i], &blist[j], &temp);
+	    }
+	
+	    j++;
+	}
+
+	i++;
+	swap_bucket(&blist[r], &blist[i], &temp);
+
+	quicksort_bucket(blist, p, i-1);
+	quicksort_bucket(blist, i+1, r);
+    }
+}
+
