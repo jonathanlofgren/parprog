@@ -1,4 +1,4 @@
-./bucketsort 1000 10000000 method
+./bucketsort 1000 100000000 method
 On unix system
 
 
