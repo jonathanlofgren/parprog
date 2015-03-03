@@ -35,6 +35,9 @@ void bucket_balance(bucket *blist, int bucket_count,
 	if (sorted_buckets[i].count != 0)
 	{
 	    load = sorted_buckets[i].count*log(sorted_buckets[i].count);
+	    //load = sorted_buckets[i].count;
+	    //load = sorted_buckets[i].count*sorted_buckets[i].count;
+	    //load = sqrt(sorted_buckets[i].count);
 	}	
 
 	// find the bucketbucket with the least load
@@ -55,12 +58,12 @@ void bucket_balance(bucket *blist, int bucket_count,
 	bb[least].bucket_count++;
     }
     
-    printf("\nLoad balancing:\n");
+    //printf("\nLoad balancing:\n");
     for (i = 0; i < num_threads; i++)
     {
-	printf("Bucket %d: %0.2f\n", i, bb[i].load);
+	//printf("Bucket %d: %0.2f\n", i, bb[i].load);
     }
-    printf("\n");
+    //printf("\n");
 
     free(sorted_buckets);
 }
@@ -129,10 +132,11 @@ void sort_manual_loadbalance(bucket *buckets, int bucket_count,
     bucket_balance(buckets, bucket_count, bb, num_threads);
     
     printf("Timings:\n");
+    double starttime2 = omp_get_wtime();
 
 #pragma omp parallel num_threads(num_threads)
     {
-	int startime = omp_get_wtime();
+	double startime = omp_get_wtime();
 	int tid = omp_get_thread_num();
 	int i;
 	for (i = 0; i < bb[tid].bucket_count; i++)
@@ -142,8 +146,8 @@ void sort_manual_loadbalance(bucket *buckets, int bucket_count,
 
 	printf("Thread %d: %0.5f sec\n", tid, omp_get_wtime()-startime);
     }
-
-    printf("\n");
+    printf("## Sorting time: %0.5f\n", omp_get_wtime()-starttime2);
+    //printf("\n");
     free_bucketbucket(bb, num_threads);
 }
 
@@ -203,7 +207,7 @@ void sort_run_time_system(bucket *buckets, int bucket_count)
 void sort_omp_scheduling(bucket *buckets, int bucket_count)
 {
     int i;
-#pragma omp parallel for schedule(dynamic,1)
+#pragma omp parallel for schedule(dynamic, 1)
     for (i = 0; i < bucket_count; i++)
     {
 	quicksort(buckets[i].b, 0, buckets[i].count - 1);
@@ -218,14 +222,15 @@ int main(int argc, char *argv[])
     int num_threads = omp_get_max_threads();
     printf("Threads = %d\n", num_threads);
 
-    if (argc != 3)
+    if (argc != 4)
     {
-	printf("Usage: ./bucketsort buckets arraylength\n");
+	printf("Usage: ./bucketsort buckets arraylength method\n");
 	return 1;
     }
 
     int bucket_count = atoi(argv[1]);
     int n = atoi(argv[2]);
+    int method = atoi(argv[3]);
     int bucket_size = 2*n/bucket_count;
 
     double *a = (double *)malloc(n*sizeof(double));
@@ -282,21 +287,27 @@ int main(int argc, char *argv[])
     printf("Assigning to bucket time: %0.4f sec\n", omp_get_wtime()-timer1);
     timer1=omp_get_wtime();
     
-    /* Manual load balancing */
-    sort_manual_loadbalance(blist, bucket_count, num_threads);
 
-    /* Serial */
-    //sort_serial(blist, bucket_count);
-
-    /* One thread for each bucket */
-    //sort_run_time_system(blist, bucket_count);
-
-    /* Using tasks */
-    //sort_tasks(blist, bucket_count);
-
-    /* Dynamic scheduling */
-    //sort_omp_scheduling(blist, bucket_count);
-
+    switch(method){
+    case 1  :
+	/* Dynamic scheduling */
+	sort_omp_scheduling(blist, bucket_count);
+	break;
+    case 2  :
+	/* Using tasks */
+	sort_tasks(blist, bucket_count);
+	break; /* optional */
+    case 3  :
+        /* Manual load balancing */
+	sort_manual_loadbalance(blist, bucket_count, num_threads);
+	break; /* optional */
+    case 4  :
+	/* One thread for each bucket */
+	sort_run_time_system(blist, bucket_count);
+	break; /* optional */
+    }
+    
+    printf("## Method %d\n", method);
     printf("## Quicksort buckets time: %0.4f sec\n", 
 	   omp_get_wtime()-timer1);
     timer1=omp_get_wtime();
@@ -326,7 +337,7 @@ int main(int argc, char *argv[])
 	}
     }
     if (i == n-1)
-	printf("Pengar på fredag!\n");
+	printf("Pengar på fredag!\n\n");
 
     // Clean up!
     for (i = 0; i < bucket_count; i++)
