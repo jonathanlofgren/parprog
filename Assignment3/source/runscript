@@ -1,25 +1,76 @@
 #!/bin/bash
 
-./bucketsort 1000 10000000 1 1>>output2
-./bucketsort 1000 10000000 1 1>>output2
-./bucketsort 1000 10000000 1 1>>output2
-./bucketsort 1000 10000000 1 1>>output2
-./bucketsort 1000 10000000 1 1>>output2
+export OMP_NUM_THREADS=8
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
 
-./bucketsort 1000 10000000 2 1>>output2
-./bucketsort 1000 10000000 2 1>>output2
-./bucketsort 1000 10000000 2 1>>output2
-./bucketsort 1000 10000000 2 1>>output2
-./bucketsort 1000 10000000 2 1>>output2
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
 
-./bucketsort 1000 10000000 3 1>>output2
-./bucketsort 1000 10000000 3 1>>output2
-./bucketsort 1000 10000000 3 1>>output2
-./bucketsort 1000 10000000 3 1>>output2
-./bucketsort 1000 10000000 3 1>>output2
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
 
-./bucketsort 1000 10000000 4 1>>output2
-./bucketsort 1000 10000000 4 1>>output2
-./bucketsort 1000 10000000 4 1>>output2
-./bucketsort 1000 10000000 4 1>>output2
-./bucketsort 1000 10000000 4 1>>output2
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+
+export OMP_NUM_THREADS=16
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+
+export OMP_NUM_THREADS=32
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+./bucketsort 10000 100000000 1 1>>output10000
+
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+./bucketsort 10000 100000000 2 1>>output10000
+
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+./bucketsort 10000 100000000 3 1>>output10000
+
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
+./bucketsort 10000 100000000 4 1>>output10000
