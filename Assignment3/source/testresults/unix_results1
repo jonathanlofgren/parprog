@@ -1,0 +1,234 @@
+./bucketsort 1000 10000000 method
+On unix system
+
+
+Threads = 8
+Allocate bucket time: 0.0183 sec
+Assigning to bucket time: 6.7776 sec
+## Method 1
+## Quicksort buckets time: 1.7071 sec
+Copy back time: 0.4731 sec
+Total time: 8.976276 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0159 sec
+Assigning to bucket time: 6.5727 sec
+## Method 1
+## Quicksort buckets time: 1.6030 sec
+Copy back time: 0.4095 sec
+Total time: 8.601162 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0181 sec
+Assigning to bucket time: 7.0337 sec
+## Method 1
+## Quicksort buckets time: 1.6060 sec
+Copy back time: 0.4073 sec
+Total time: 9.065203 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0179 sec
+Assigning to bucket time: 7.3124 sec
+## Method 1
+## Quicksort buckets time: 1.7872 sec
+Copy back time: 0.4458 sec
+Total time: 9.563379 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0185 sec
+Assigning to bucket time: 6.9309 sec
+## Method 1
+## Quicksort buckets time: 1.6735 sec
+Copy back time: 0.4249 sec
+Total time: 9.047801 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0160 sec
+Assigning to bucket time: 6.4409 sec
+## Method 2
+## Quicksort buckets time: 1.5633 sec
+Copy back time: 0.4238 sec
+Total time: 8.444005 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0181 sec
+Assigning to bucket time: 7.0033 sec
+## Method 2
+## Quicksort buckets time: 1.6748 sec
+Copy back time: 0.4141 sec
+Total time: 9.110348 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0182 sec
+Assigning to bucket time: 7.1741 sec
+## Method 2
+## Quicksort buckets time: 1.5959 sec
+Copy back time: 0.4976 sec
+Total time: 9.285855 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0159 sec
+Assigning to bucket time: 6.8352 sec
+## Method 2
+## Quicksort buckets time: 1.5857 sec
+Copy back time: 0.4006 sec
+Total time: 8.837502 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0183 sec
+Assigning to bucket time: 6.9926 sec
+## Method 2
+## Quicksort buckets time: 1.6144 sec
+Copy back time: 0.4105 sec
+Total time: 9.035874 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0167 sec
+Assigning to bucket time: 7.0776 sec
+Timings:
+Thread 5: 1.41860 sec
+Thread 6: 1.45021 sec
+Thread 2: 1.45126 sec
+Thread 1: 1.46681 sec
+Thread 0: 1.71521 sec
+Thread 4: 1.76798 sec
+Thread 3: 1.77548 sec
+Thread 7: 1.82021 sec
+## Sorting time: 1.82122
+## Method 3
+## Quicksort buckets time: 1.8215 sec
+Copy back time: 0.4102 sec
+Total time: 9.326012 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0185 sec
+Assigning to bucket time: 6.6004 sec
+Timings:
+Thread 5: 1.40134 sec
+Thread 1: 1.44662 sec
+Thread 2: 1.45117 sec
+Thread 0: 1.45757 sec
+Thread 4: 1.46689 sec
+Thread 6: 1.47652 sec
+Thread 7: 1.68665 sec
+Thread 3: 1.69835 sec
+## Sorting time: 1.69931
+## Method 3
+## Quicksort buckets time: 1.6996 sec
+Copy back time: 0.4031 sec
+Total time: 8.721649 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0180 sec
+Assigning to bucket time: 6.7733 sec
+Timings:
+Thread 4: 1.42140 sec
+Thread 3: 1.42693 sec
+Thread 0: 1.42740 sec
+Thread 7: 1.45807 sec
+Thread 5: 1.71037 sec
+Thread 2: 1.73868 sec
+Thread 6: 1.75249 sec
+Thread 1: 1.77105 sec
+## Sorting time: 1.77192
+## Method 3
+## Quicksort buckets time: 1.7722 sec
+Copy back time: 0.4045 sec
+Total time: 8.968101 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0159 sec
+Assigning to bucket time: 6.2924 sec
+Timings:
+Thread 3: 1.40509 sec
+Thread 0: 1.41094 sec
+Thread 6: 1.41207 sec
+Thread 5: 1.41335 sec
+Thread 1: 1.42752 sec
+Thread 4: 1.42785 sec
+Thread 2: 1.42813 sec
+Thread 7: 1.45088 sec
+## Sorting time: 1.45193
+## Method 3
+## Quicksort buckets time: 1.4522 sec
+Copy back time: 0.4034 sec
+Total time: 8.163943 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0162 sec
+Assigning to bucket time: 6.5650 sec
+Timings:
+Thread 4: 1.40809 sec
+Thread 3: 1.41389 sec
+Thread 0: 1.42933 sec
+Thread 1: 1.43142 sec
+Thread 6: 1.44267 sec
+Thread 7: 1.46219 sec
+Thread 2: 1.73293 sec
+Thread 5: 1.90901 sec
+## Sorting time: 1.91006
+## Method 3
+## Quicksort buckets time: 1.9104 sec
+Copy back time: 0.4243 sec
+Total time: 8.915946 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0182 sec
+Assigning to bucket time: 6.9061 sec
+## Method 4
+## Quicksort buckets time: 1.8098 sec
+Copy back time: 0.4077 sec
+Total time: 9.141822 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0182 sec
+Assigning to bucket time: 6.7467 sec
+## Method 4
+## Quicksort buckets time: 1.6878 sec
+Copy back time: 0.4142 sec
+Total time: 8.867034 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0202 sec
+Assigning to bucket time: 7.0857 sec
+## Method 4
+## Quicksort buckets time: 1.8022 sec
+Copy back time: 0.4396 sec
+Total time: 9.347868 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0180 sec
+Assigning to bucket time: 6.7001 sec
+## Method 4
+## Quicksort buckets time: 1.6485 sec
+Copy back time: 0.4047 sec
+Total time: 8.771405 sec
+Pengar på fredag!
+
+Threads = 8
+Allocate bucket time: 0.0191 sec
+Assigning to bucket time: 6.7932 sec
+## Method 4
+## Quicksort buckets time: 1.6137 sec
+Copy back time: 0.4144 sec
+Total time: 8.840499 sec
+Pengar på fredag!
+
