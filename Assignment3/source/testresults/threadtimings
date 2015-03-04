@@ -1,0 +1,135 @@
+# 10.000 buckets
+
+Thread 16: 0.48145 sec
+Thread 00: 0.48225 sec
+Thread 26: 0.48372 sec
+Thread 04: 0.48391 sec
+Thread 12: 0.48393 sec
+Thread 08: 0.48440 sec
+Thread 20: 0.48479 sec
+Thread 13: 0.48489 sec
+Thread 05: 0.48503 sec
+Thread 06: 0.48517 sec
+Thread 10: 0.48553 sec
+Thread 01: 0.48555 sec
+Thread 24: 0.48557 sec
+Thread 09: 0.48582 sec
+Thread 29: 0.48593 sec
+Thread 18: 0.48595 sec
+Thread 21: 0.48622 sec
+Thread 11: 0.48633 sec
+Thread 17: 0.48657 sec
+Thread 14: 0.48672 sec
+Thread 15: 0.48693 sec
+Thread 30: 0.48703 sec
+Thread 19: 0.48713 sec
+Thread 03: 0.48734 sec
+Thread 22: 0.48737 sec
+Thread 25: 0.48739 sec
+Thread 02: 0.48760 sec
+Thread 31: 0.48769 sec
+Thread 23: 0.48785 sec
+Thread 27: 0.48867 sec
+Thread 28: 0.48868 sec
+Thread 07: 0.48875 sec
+
+# 1.000 buckets
+
+Thread 23: 0.66396 sec
+Thread 28: 0.66873 sec
+Thread 04: 0.67020 sec
+Thread 00: 0.67103 sec
+Thread 08: 0.67774 sec
+Thread 15: 0.67836 sec
+Thread 12: 0.68109 sec
+Thread 20: 0.68642 sec
+Thread 13: 0.68898 sec
+Thread 16: 0.69468 sec
+Thread 09: 0.69936 sec
+Thread 27: 0.70269 sec
+Thread 22: 0.70704 sec
+Thread 01: 0.70723 sec
+Thread 17: 0.70810 sec
+Thread 07: 0.71120 sec
+Thread 19: 0.71149 sec
+Thread 29: 0.71178 sec
+Thread 25: 0.71182 sec
+Thread 31: 0.71411 sec
+Thread 05: 0.71850 sec
+Thread 03: 0.72151 sec
+Thread 11: 0.72463 sec
+Thread 21: 0.72549 sec
+Thread 24: 0.72707 sec
+Thread 18: 0.72821 sec
+Thread 14: 0.72886 sec
+Thread 02: 0.73366 sec
+Thread 10: 0.73595 sec
+Thread 26: 0.73687 sec
+Thread 30: 0.73706 sec
+Thread 06: 0.73712 sec
+
+0.48145
+0.48225
+0.48372
+0.48391
+0.48393
+0.48440
+0.48479
+0.48489
+0.48503
+0.48517
+0.48553
+0.48555
+0.48557
+0.48582
+0.48593
+0.48595
+0.48622
+0.48633
+0.48657
+0.48672
+0.48693
+0.48703
+0.48713
+0.48734
+0.48737
+0.48739
+0.48760
+0.48769
+0.48785
+0.48867
+0.48868
+0.48875
+
+0.66396
+0.66873
+0.67020
+0.67103
+0.67774
+0.67836
+0.68109
+0.68642
+0.68898
+0.69468
+0.69936
+0.70269
+0.70704
+0.70723
+0.70810
+0.71120
+0.71149
+0.71178
+0.71182
+0.71411
+0.71850
+0.72151
+0.72463
+0.72549
+0.72707
+0.72821
+0.72886
+0.73366
+0.73595
+0.73687
+0.73706
+0.73712

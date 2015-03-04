@@ -111,6 +111,7 @@ void fill_normal_dist(double *a, int n)
     double u1, u2;
     int i;
 
+#pragma omp parallel for
     for (i = 0; i < n; i+=2)
     {
 	u1 = drand48();
@@ -296,15 +297,17 @@ int main(int argc, char *argv[])
     case 2  :
 	/* Using tasks */
 	sort_tasks(blist, bucket_count);
-	break; /* optional */
+	break;
     case 3  :
         /* Manual load balancing */
 	sort_manual_loadbalance(blist, bucket_count, num_threads);
-	break; /* optional */
+	break;
     case 4  :
 	/* One thread for each bucket */
 	sort_run_time_system(blist, bucket_count);
-	break; /* optional */
+	break;
+    case 5  :
+	sort_serial(blist, bucket_count);
     }
     
     printf("## Method %d\n", method);
